@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringP("address", "a", "localhost:50000", "Server Address")
+	rootCmd.PersistentFlags().StringP("address", "a", ":50000", "Server Address")
 }
 
 func Execute() {
