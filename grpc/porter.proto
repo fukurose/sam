@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package grpc;
+option go_package = "grpc/";
+
+service PorterService {
+	rpc ListSegmentStream (LSRequest) returns (stream LSResponse);
+	rpc OrderStream (OrderRequest) returns (stream OrderResponse);
+}
+
+message LSRequest {
+	string path = 1;
+}
+
+message LSResponse {
+	string path = 1;
+	int64 size = 2;
+}
+
+message OrderRequest {
+	string file_path = 1;
+}
+
+message OrderResponse {
+	bytes data = 1;
+}
+
+
