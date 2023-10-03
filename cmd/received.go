@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"os"
@@ -46,6 +47,32 @@ func (s *porterServer) ListSegmentStream(req *porter.LSRequest, stream porter.Po
 	if err != nil {
 		fmt.Println(err)
 		return err
+	}
+
+	return nil
+}
+
+func (s *porterServer) OrderStream(req *porter.OrderRequest, stream porter.PorterService_OrderStreamServer) error {
+	f, err := os.Open(req.GetFilePath())
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	buf := make([]byte, 4194304) // Limit 4MB
+	for {
+		n, err := f.Read(buf)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		if err := stream.Send(&porter.OrderResponse{
+			Data: buf[:n],
+		}); err != nil {
+			return err
+		}
 	}
 
 	return nil
